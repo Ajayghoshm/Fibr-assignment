@@ -12,7 +12,6 @@ import { useState } from "react"
 import {
     DndContext,
     closestCenter,
-    KeyboardSensor,
     PointerSensor,
     useSensor,
     useSensors,
@@ -222,7 +221,7 @@ const Edit = () => {
                         strategy={verticalListSortingStrategy}
                     >
                         {pageValues.map(item => {
-                            return <DragablComponents item={item} id={item.id} setFormValue={setFormValue} />
+                            return <DragablComponents key={item.id} item={item} id={item.id} setFormValue={setFormValue} />
                         })}
                     </SortableContext>
                 </DndContext>

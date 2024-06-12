@@ -23,9 +23,9 @@ export const Cards = ({ item, setFormValue }) => {
     return (
         <div>
             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Card Component</label>
-            {Object.entries(value).map(item => {
+            {Object.entries(value).map((item,index) => {
                 return (
-                    <div className="flex justify-between space-x-2 py-2">
+                    <div key={index} className="flex justify-between space-x-2 py-2">
 
                         <input className="w-44 bg-gray-50 border border-gray-300
              text-gray-900 text-sm rounded-lg focus:ring-blue-500
