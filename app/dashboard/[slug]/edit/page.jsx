@@ -27,6 +27,57 @@ import { CSS } from '@dnd-kit/utilities';
 import { Cards } from "@/components/EditComponents/Cards"
 
 
+const AddComponent = () => {
+
+    const [type, setType] = useState()
+    const [value, setValue] = useState()
+
+
+    const onCheckBoxSelection = (type) => {
+        setValue()
+        setType(type)
+    }
+
+
+    return (
+        <div className="p-4 md:p-5 space-x-10">
+            <div className='flex justify-between'>
+                <div className="flex items-center">
+                    <input onClick={() => onCheckBoxSelection('header')} checked={type == 'header'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Header</label>
+                </div>
+                <div className="flex items-center">
+                    <input onClick={() => onCheckBoxSelection('footer')} checked={type == 'footer'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Footer</label>
+                </div>
+                <div className="flex items-center">
+                    <input onClick={() => onCheckBoxSelection('textblock')} checked={type == 'textblock'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Text block</label>
+                </div>
+                <div className="flex items-center">
+                    <input onClick={() => onCheckBoxSelection('image')} checked={type == 'image'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Image</label>
+                </div>
+            </div>
+            <div>
+                {(type === 'header' || type === 'footer') &&
+                    <>
+                        <input value={value} onChange={(e) => setValue(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-96"></input>
+                    </>}
+                {(type === 'textblock') &&
+                    <>
+                        <textarea value={value} onChange={(e) => setValue(e.target.value)} className=" w-96 block p-2.5  text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 " />
+                    </>}
+                {(type === 'image') &&
+                    <>
+                        <input type='file' value={value} onChange={(e) => setValue(e.target.value)} className="block w-96 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" />
+                    </>}
+            </div>
+        </div>
+    )
+}
+
+
 const DragablComponents = ({ item, id, setFormValue }) => {
 
     const {
@@ -112,10 +163,7 @@ const Edit = () => {
     const [newComponentPopup, setNewComponentPopup] = useState(false)
 
     const sensors = useSensors(
-        useSensor(PointerSensor),
-        // useSensor(KeyboardSensor, {
-        //     coordinateGetter: sortableKeyboardCoordinates,
-        // })
+        useSensor(PointerSensor)
     );
 
 
@@ -209,7 +257,9 @@ const Edit = () => {
 
     return (
         <>
-            <Popup show={newComponentPopup} setShow={setNewComponentPopup} addComponent={addComponent} />
+            <Popup show={newComponentPopup} setShow={setNewComponentPopup} onSubmit={addComponent} >
+                <AddComponent />
+            </Popup>
             <div className="flex flex-col items-center justify-center w-full">
                 <DndContext
                     sensors={sensors}
