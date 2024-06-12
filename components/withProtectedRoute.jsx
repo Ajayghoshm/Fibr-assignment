@@ -12,7 +12,7 @@ const withProtectedRoute=function(WrappedComponent) {
 
     useEffect(() => {
       let value=JSON.parse(localStorage.getItem('auth'))
-      // If the user is not authenticated, redirect to the login page
+      
       if (!value) {
         router.push('/login');
       }
@@ -21,8 +21,6 @@ const withProtectedRoute=function(WrappedComponent) {
       }
     }, [router]);
 
-    // If the user is authenticated, render the WrappedComponent
-    // Otherwise, render null while the redirection is in progress
     return login ? <WrappedComponent {...props} /> : null;
   };
 };
