@@ -12,7 +12,6 @@ import { useState } from "react"
 import {
     DndContext,
     closestCenter,
-    KeyboardSensor,
     PointerSensor,
     useSensor,
     useSensors,
@@ -25,6 +24,58 @@ import {
 } from '@dnd-kit/sortable';
 import { useSortable } from "@dnd-kit/sortable/dist"
 import { CSS } from '@dnd-kit/utilities';
+import { Cards } from "@/components/EditComponents/Cards"
+
+
+const AddComponent = () => {
+
+    const [type, setType] = useState()
+    const [value, setValue] = useState()
+
+
+    const onCheckBoxSelection = (type) => {
+        setValue()
+        setType(type)
+    }
+
+
+    return (
+        <div className="p-4 md:p-5 space-x-10">
+            <div className='flex justify-between'>
+                <div className="flex items-center">
+                    <input onClick={() => onCheckBoxSelection('header')} checked={type == 'header'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Header</label>
+                </div>
+                <div className="flex items-center">
+                    <input onClick={() => onCheckBoxSelection('footer')} checked={type == 'footer'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Footer</label>
+                </div>
+                <div className="flex items-center">
+                    <input onClick={() => onCheckBoxSelection('textblock')} checked={type == 'textblock'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Text block</label>
+                </div>
+                <div className="flex items-center">
+                    <input onClick={() => onCheckBoxSelection('image')} checked={type == 'image'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Image</label>
+                </div>
+            </div>
+            <div>
+                {(type === 'header' || type === 'footer') &&
+                    <>
+                        <input value={value} onChange={(e) => setValue(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-96"></input>
+                    </>}
+                {(type === 'textblock') &&
+                    <>
+                        <textarea value={value} onChange={(e) => setValue(e.target.value)} className=" w-96 block p-2.5  text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 " />
+                    </>}
+                {(type === 'image') &&
+                    <>
+                        <input type='file' value={value} onChange={(e) => setValue(e.target.value)} className="block w-96 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" />
+                    </>}
+            </div>
+        </div>
+    )
+}
 
 
 const DragablComponents = ({ item, id, setFormValue }) => {
@@ -82,6 +133,12 @@ const DragablComponents = ({ item, id, setFormValue }) => {
                     <ImageComponent item={item} setFormValue={setFormValue} /><ArrowIcon /></div></div>
 
         }
+        case 'cards': {
+            return <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+                <div className="flex flex-col items-center p-2  border-gray-100 border bg-gray-50 rounded-lg my-2 hover:bg-gray-100">
+                    <Cards item={item} setFormValue={setFormValue} />
+                    <ArrowIcon /></div></div>
+        }
     }
 }
 
@@ -106,10 +163,7 @@ const Edit = () => {
     const [newComponentPopup, setNewComponentPopup] = useState(false)
 
     const sensors = useSensors(
-        useSensor(PointerSensor),
-        // useSensor(KeyboardSensor, {
-        //     coordinateGetter: sortableKeyboardCoordinates,
-        // })
+        useSensor(PointerSensor)
     );
 
 
@@ -143,8 +197,13 @@ const Edit = () => {
         {
             id: Math.random(),
             type: 'footer',
-            value: "Acquisitions List"
+            value: "Acquisitions "
         },
+        {
+            id: Math.random(),
+            type: 'cards',
+            value: { 'Developer': '10M', "Companies": "90+", "Organizations": "4M+" }
+        }
     ])
 
     const setFormValue = (id, value) => {
@@ -158,8 +217,8 @@ const Edit = () => {
     }
 
     const onSubmit = () => {
-        const existingValue=window?.localStorage?.getItem('pageValues') ? JSON.parse(localStorage.getItem('pageValues')) : [];
-        existingValue.push({id:slug,values:pageValues})
+        const existingValue = window?.localStorage?.getItem('pageValues') ? JSON.parse(localStorage.getItem('pageValues')) : [];
+        existingValue.push({ id: slug, values: pageValues })
 
         localStorage.setItem('pageValues', JSON.stringify(existingValue))
     }
@@ -198,7 +257,9 @@ const Edit = () => {
 
     return (
         <>
-            <Popup show={newComponentPopup} setShow={setNewComponentPopup} addComponent={addComponent} />
+            <Popup show={newComponentPopup} setShow={setNewComponentPopup} onSubmit={addComponent} >
+                <AddComponent />
+            </Popup>
             <div className="flex flex-col items-center justify-center w-full">
                 <DndContext
                     sensors={sensors}
@@ -210,11 +271,11 @@ const Edit = () => {
                         strategy={verticalListSortingStrategy}
                     >
                         {pageValues.map(item => {
-                            return <DragablComponents item={item} id={item.id} setFormValue={setFormValue} />
+                            return <DragablComponents key={item.id} item={item} id={item.id} setFormValue={setFormValue} />
                         })}
                     </SortableContext>
                 </DndContext>
-                <button  className="w-96 py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={() => openPopup()}>Add Component</button>
+                <button className="w-96 py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={() => openPopup()}>Add Component</button>
                 <button className="w-96 text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => onSubmit()}>Submit</button>
             </div >
         </>)

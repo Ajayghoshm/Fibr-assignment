@@ -1,7 +1,9 @@
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 const ListingTable = ({ routeListing,onNewCreate }) => {
+
+    const [deletePopUp,setDeletePopup] =useState(false)
 
     return (
         <div className="" > 
@@ -31,12 +33,12 @@ const ListingTable = ({ routeListing,onNewCreate }) => {
                                         View
                                     </Link>
                                 </td>
-                                {item?.editable &&
+                                
                                     <td className="cursor-pointer px-6 py-4">
                                         <Link href={`/dashboard/${item.id}/edit`}>Edit
                                         </Link>
                                     </td>
-                                }
+                                
                                 <td className="cursor-pointer px-6 py-4">Delete</td>
                             </tr>)
                         })}
