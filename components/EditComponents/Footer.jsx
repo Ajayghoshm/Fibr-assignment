@@ -22,6 +22,7 @@ const Footer = ({ item,setFormValue }) => {
         
         return (
         <div>
+             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Footer Component</label>
             <input 
             className="w-96 bg-gray-50 border border-gray-300
              text-gray-900 text-sm rounded-lg focus:ring-blue-500

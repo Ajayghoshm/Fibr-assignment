@@ -1,5 +1,6 @@
 'use client'
 import ListingTable from '@/components/ListingTable'
+import { ProtectedRoute } from '@/components/protectedRoute'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
@@ -42,10 +43,20 @@ const Dashboard = () => {
     }, [])
 
     return (<div>
+              <header>
+        <nav class="bg-white border-gray-200 dark:bg-gray-900">
+          <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <a href="/" class="flex items-center space-x-3 rounded-lg rtl:space-x-reverse">
+              <img src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/7a3ec529632909.55fc107b84b8c.png" class="h-8" alt="Flowbite Logo" />
+              <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Blog Page Creator</span>
+            </a>
+            <a href="https://www.linkedin.com/in/ajayghoshm/" class="flex  text-xs items-center space-x-3 rounded-lg rtl:space-x-reverse">
+              Contact Me
+            </a>
+          </div>
+        </nav>
+      </header>
         <div className="flex">
-            {/* <aside className="min-w-48">
-      <Sidebar/>
-      </aside> */}
             <main className='h-[90vh] w-[90vw]'>
                 {routeListing.length!=0 && <div className='flex justify-end'>
                     <button
@@ -64,4 +75,4 @@ const Dashboard = () => {
     </div>)
 }
 
-export default Dashboard
+export default ProtectedRoute(Dashboard)
