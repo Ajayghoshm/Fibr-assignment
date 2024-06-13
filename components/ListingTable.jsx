@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Popup from "./popup";
 import DeletePopup from "./deletePopup";
 
-const ListingTable = ({ routeListing, onNewCreate, deleteItem }) => {
+const ListingTable = ({ routeListing, onNewCreate, deleteItem,addClickinTable}) => {
 
     const [deletePopUp, setDeletePopup] = useState(false)
 
@@ -12,6 +12,13 @@ const ListingTable = ({ routeListing, onNewCreate, deleteItem }) => {
        setDeletePopup(false)
     }
 
+    const addClick=(id)=>{
+        console.debug("clicker")
+        addClickinTable(id)
+    }
+
+
+    console.debug("router",routeListing)
     return (
         <>
             <DeletePopup show={deletePopUp} setShow={setDeletePopup} onSubmit={onDelete} header={'Do you want to delete the Page'} />
@@ -26,6 +33,7 @@ const ListingTable = ({ routeListing, onNewCreate, deleteItem }) => {
                                 <th scope="col" className="px-6 py-3">View</th>
                                 <th scope="col" className="px-6 py-3">Edit</th>
                                 <th scope="col" className="px-6 py-3">Delete</th>
+                                <th scope="col" className="px-6 py-3">Number of Views</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,18 +50,27 @@ const ListingTable = ({ routeListing, onNewCreate, deleteItem }) => {
                                         </div>}
                                     </td>
 
-                                    <td className="px-6 py-4">
-                                        <Link href={`/dashboard/${item.id}`}>
+                                    <td className="px-6 py-4"  >
+                                        <Link href={`/dashboard/${item.id}`} onClick={()=>addClick(item.id)}>
                                             View
                                         </Link>
                                     </td>
 
-                                    <td className="cursor-pointer px-6 py-4">
-                                        <Link href={`/dashboard/${item.id}/edit`}>Edit
+                                    <td className="cursor-pointer px-6 py-4" o>
+                                        <Link href={`/dashboard/${item.id}/edit`}><span  >
+                                        Edit
+                                        </span>
                                         </Link>
                                     </td>
 
                                     <td className="cursor-pointer px-6 py-4" onClick={()=>setDeletePopup(item.id)}>Delete</td>
+                               
+                                    <td className="px-6 py-4">
+                                        
+                                            {item?.clicks}
+                                        
+                                    </td>
+                               
                                 </tr>)
                             })}
 

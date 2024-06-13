@@ -44,6 +44,22 @@ const Dashboard = () => {
         window?.localStorage?.setItem('pageValues',JSON.stringify(getUserfromLocalStorage))
     }
 
+    const addClickinTable=(id)=>{
+        console.debug("item",id)
+        setRouteListing(state => {
+            let newState = JSON.parse(JSON.stringify(state))
+            
+            let foundIndex = newState.findIndex(item => item?.id == id)
+            console.debug("item",newState,id,foundIndex)
+            newState[foundIndex].clicks=newState[foundIndex]?.clicks+1
+            return newState
+        })
+        let getUserfromLocalStorage = window?.localStorage?.getItem('pageValues') ? JSON.parse(localStorage.getItem('pageValues')) : null;
+        let foundIndex = getUserfromLocalStorage?.findIndex(item => item?.id == id)
+        getUserfromLocalStorage[foundIndex].clicks=getUserfromLocalStorage[foundIndex]?.clicks?getUserfromLocalStorage[foundIndex]?.clicks+1:1
+        window?.localStorage?.setItem('pageValues',JSON.stringify(getUserfromLocalStorage))
+    }
+
     return (<div>
         <header>
             <nav class="bg-white border-gray-200 dark:bg-gray-900">
@@ -70,7 +86,7 @@ const Dashboard = () => {
                 </div>
                 }
 
-                <ListingTable routeListing={routeListing} onNewCreate={onNewCreate} deleteItem={deleteItem} />
+                <ListingTable addClickinTable={addClickinTable} routeListing={routeListing} onNewCreate={onNewCreate} deleteItem={deleteItem} />
 
             </main>
         </div>

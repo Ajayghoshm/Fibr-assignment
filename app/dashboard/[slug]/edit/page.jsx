@@ -193,7 +193,7 @@ const onSubmit = () => {
     const existingValue = window?.localStorage?.getItem('pageValues') ? JSON.parse(localStorage.getItem('pageValues')) : [];
     let existingIndex = existingValue.findIndex(item => item.id == slug)
     if (existingIndex == -1) {
-        existingValue.push({ id: slug, status: false, values: pageValues })
+        existingValue.push({ id: slug, clicks:0, status: false, values: pageValues })
     }
     else {
         existingValue[existingIndex] = { id: slug, status: false, values: pageValues }
