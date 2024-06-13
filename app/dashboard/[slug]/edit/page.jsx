@@ -7,8 +7,8 @@ import ImageComponent from "@/components/EditComponents/Image"
 import TextBlock from "@/components/EditComponents/TextBlock"
 import Title from "@/components/EditComponents/Title"
 import Popup from "@/components/popup"
-import { useParams } from "next/navigation"
-import { useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import {
     DndContext,
     closestCenter,
@@ -25,57 +25,8 @@ import {
 import { useSortable } from "@dnd-kit/sortable/dist"
 import { CSS } from '@dnd-kit/utilities';
 import { Cards } from "@/components/EditComponents/Cards"
+import Image from "next/image"
 
-
-const AddComponent = () => {
-
-    const [type, setType] = useState()
-    const [value, setValue] = useState()
-
-
-    const onCheckBoxSelection = (type) => {
-        setValue()
-        setType(type)
-    }
-
-
-    return (
-        <div className="p-4 md:p-5 space-x-10">
-            <div className='flex justify-between'>
-                <div className="flex items-center">
-                    <input onClick={() => onCheckBoxSelection('header')} checked={type == 'header'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Header</label>
-                </div>
-                <div className="flex items-center">
-                    <input onClick={() => onCheckBoxSelection('footer')} checked={type == 'footer'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Footer</label>
-                </div>
-                <div className="flex items-center">
-                    <input onClick={() => onCheckBoxSelection('textblock')} checked={type == 'textblock'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Text block</label>
-                </div>
-                <div className="flex items-center">
-                    <input onClick={() => onCheckBoxSelection('image')} checked={type == 'image'} type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                    <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Image</label>
-                </div>
-            </div>
-            <div>
-                {(type === 'header' || type === 'footer') &&
-                    <>
-                        <input value={value} onChange={(e) => setValue(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-96"></input>
-                    </>}
-                {(type === 'textblock') &&
-                    <>
-                        <textarea value={value} onChange={(e) => setValue(e.target.value)} className=" w-96 block p-2.5  text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 " />
-                    </>}
-                {(type === 'image') &&
-                    <>
-                        <input type='file' value={value} onChange={(e) => setValue(e.target.value)} className="block w-96 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" />
-                    </>}
-            </div>
-        </div>
-    )
-}
 
 
 const DragablComponents = ({ item, id, setFormValue }) => {
@@ -157,6 +108,7 @@ const ArrowIcon = () => {
 const Edit = () => {
 
     const { slug } = useParams()
+    const route = useRouter()
 
     console.debug("ids", slug)
 
@@ -165,6 +117,16 @@ const Edit = () => {
     const sensors = useSensors(
         useSensor(PointerSensor)
     );
+
+
+    useEffect(() => {
+        const existingValue = window?.localStorage?.getItem('pageValues') ? JSON.parse(localStorage.getItem('pageValues')) : [];
+        let existingIndex = existingValue.findIndex(item => item.id == slug)
+        if (existingIndex != -1) {
+            setPageValue(existingValue[existingIndex].values)
+        }
+
+    }, [])
 
 
     const [pageValues, setPageValue] = useState([
@@ -196,71 +158,100 @@ const Edit = () => {
         },
         {
             id: Math.random(),
-            type: 'footer',
-            value: "Acquisitions "
-        },
-        {
-            id: Math.random(),
             type: 'cards',
-            value: { 'Developer': '10M', "Companies": "90+", "Organizations": "4M+" }
-        }
+            value: [
+                {
+                    'Developer': '10M'
+                },
+                {
+                    "Companies": "90+"
+                },
+                {
+                    "Organizations": "4M+"
+                }
+            ]
+        },
+    {
+        id: Math.random(),
+            type: 'footer',
+                value: "Acquisitions "
+        },
+
     ])
 
-    const setFormValue = (id, value) => {
-        setPageValue(state => {
-            const newState = JSON.parse(JSON.stringify(state))
-            const index = newState.findIndex((item => item.id == id));
-            newState[index].value = value
-            return newState
-        }
-        )
+const setFormValue = (id, value) => {
+    setPageValue(state => {
+        const newState = JSON.parse(JSON.stringify(state))
+        const index = newState.findIndex((item => item.id == id));
+        newState[index].value = value
+        return newState
+    }
+    )
+}
+
+const onSubmit = () => {
+    const existingValue = window?.localStorage?.getItem('pageValues') ? JSON.parse(localStorage.getItem('pageValues')) : [];
+    let existingIndex = existingValue.findIndex(item => item.id == slug)
+    if (existingIndex == -1) {
+        existingValue.push({ id: slug, clicks:0, status: false, values: pageValues })
+    }
+    else {
+        existingValue[existingIndex] = { id: slug, status: false, values: pageValues }
     }
 
-    const onSubmit = () => {
-        const existingValue = window?.localStorage?.getItem('pageValues') ? JSON.parse(localStorage.getItem('pageValues')) : [];
-        existingValue.push({ id: slug, values: pageValues })
+    localStorage.setItem('pageValues', JSON.stringify(existingValue))
+    route.push('/')
+}
 
-        localStorage.setItem('pageValues', JSON.stringify(existingValue))
-    }
-
-    const addComponent = (type, value) => {
-        console.debug("newPush", type, value)
-        setPageValue(state => {
-            const newState = JSON.parse(JSON.stringify(state))
-            newState.push({
-                id: Math.random(),
-                type: type,
-                value: value
-            })
-            return (newState)
+const addComponent = (type, value) => {
+    console.debug("newPush", type, value)
+    setPageValue(state => {
+        const newState = JSON.parse(JSON.stringify(state))
+        newState.push({
+            id: Math.random(),
+            type: type,
+            value: value
         })
-        setNewComponentPopup(false)
+        return (newState)
+    })
+    setNewComponentPopup(false)
+}
+
+const openPopup = () => {
+    setNewComponentPopup(true)
+}
+
+function handleDragEnd(event) {
+    const { active, over } = event;
+    console.debug("active", active, over)
+    if (active.id !== over.id) {
+        setPageValue((items) => {
+            const oldIndex = items.findIndex((item => item.id == active.id));
+            const newIndex = items.findIndex((item => item.id == over.id));
+
+            return arrayMove(items, oldIndex, newIndex);
+        });
     }
+}
 
-    const openPopup = () => {
-        setNewComponentPopup(true)
-    }
+const [name, setName] = useState(slug)
 
-    function handleDragEnd(event) {
-        const { active, over } = event;
-        console.debug("active", active, over)
-        if (active.id !== over.id) {
-            setPageValue((items) => {
-                const oldIndex = items.findIndex((item => item.id == active.id));
-                const newIndex = items.findIndex((item => item.id == over.id));
+// const onNameChange = (e) => {
+//     setName(e.target.value)
+// }
 
-                return arrayMove(items, oldIndex, newIndex);
-            });
-        }
-    }
-
-
-    return (
-        <>
-            <Popup show={newComponentPopup} setShow={setNewComponentPopup} onSubmit={addComponent} >
-                <AddComponent />
-            </Popup>
-            <div className="flex flex-col items-center justify-center w-full">
+return (
+    <>
+        <h2 class="mb-4 flex justify-center text-xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-3xl"><span class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">Edit Page</span></h2>
+        <label className="flex justify-center w-full">You can rearrange the item here using Drag and Drop in this list</label>
+        {/* <div className="flex justify-center flex-col items-center space-y-2">
+                <label>Page Name</label>
+                <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-96"
+                value={name} onChange={(e) => onNameChange(e)} />
+            </div> */}
+        <Popup show={newComponentPopup} setShow={setNewComponentPopup} onSubmit={addComponent} header={'Select the component to be added'} />
+        <div className="flex flex-col items-center justify-center w-full over">
+            <div className="h-[71vh] overflow-auto px-10 w-full">
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
@@ -275,10 +266,13 @@ const Edit = () => {
                         })}
                     </SortableContext>
                 </DndContext>
+            </div>
+            <div className="flex justify-between w-full py-10">
                 <button className="w-96 py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={() => openPopup()}>Add Component</button>
                 <button className="w-96 text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => onSubmit()}>Submit</button>
             </div >
-        </>)
+        </div>
+    </>)
 }
 
 export default Edit

@@ -9,31 +9,16 @@ const Dashboard = () => {
 
 
     const logout = async () => {
-        localStorage.setItem('auth',false)
+        localStorage.setItem('auth', false)
         route.push('/login')
-      };
-    
+    };
+
 
     const route = useRouter()
-    const [routeListing, setRouteListing] = useState([{
-        name: '1',
-        status: 'Live',
-        editable: true,
-    },
-    {
-        name: '2',
-        status: 'Ready',
-        editable: true,
-    },
-    {
-        name: '3',
-        status: 'Not Ready',
-        editable: true,
-    },
-    ])
+    const [routeListing, setRouteListing] = useState([])
 
     const onNewCreate = () => {
-        route.push(`/dashboard/${routeListing.length + 1}/edit`)
+        route.push(`/dashboard/${ Math.round((Math.floor(Math.random() * 1000) + 10) / 10) * 10}/edit`)
     }
 
 
@@ -48,6 +33,33 @@ const Dashboard = () => {
 
     }, [])
 
+    const deleteItem = (id) => {
+        setRouteListing(state => {
+            let newState = JSON.parse(JSON.stringify(state))
+            newState = newState.filter(item => item?.id != id)
+            return newState
+        })
+        let getUserfromLocalStorage = window?.localStorage?.getItem('pageValues') ? JSON.parse(localStorage.getItem('pageValues')) : null;
+        getUserfromLocalStorage = getUserfromLocalStorage?.filter(item => item?.id != id)
+        window?.localStorage?.setItem('pageValues',JSON.stringify(getUserfromLocalStorage))
+    }
+
+    const addClickinTable=(id)=>{
+        console.debug("item",id)
+        setRouteListing(state => {
+            let newState = JSON.parse(JSON.stringify(state))
+            
+            let foundIndex = newState.findIndex(item => item?.id == id)
+            console.debug("item",newState,id,foundIndex)
+            newState[foundIndex].clicks=newState[foundIndex]?.clicks+1
+            return newState
+        })
+        let getUserfromLocalStorage = window?.localStorage?.getItem('pageValues') ? JSON.parse(localStorage.getItem('pageValues')) : null;
+        let foundIndex = getUserfromLocalStorage?.findIndex(item => item?.id == id)
+        getUserfromLocalStorage[foundIndex].clicks=getUserfromLocalStorage[foundIndex]?.clicks?getUserfromLocalStorage[foundIndex]?.clicks+1:1
+        window?.localStorage?.setItem('pageValues',JSON.stringify(getUserfromLocalStorage))
+    }
+
     return (<div>
         <header>
             <nav class="bg-white border-gray-200 dark:bg-gray-900">
@@ -56,8 +68,8 @@ const Dashboard = () => {
                         <img src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/7a3ec529632909.55fc107b84b8c.png" class="h-8" alt="Flowbite Logo" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Blog Page Creator</span>
                     </a>
-                    <button onClick={()=>{logout()}} href="https://www.linkedin.com/in/ajayghoshm/" class="flex  text-xs items-center space-x-3 rounded-lg rtl:space-x-reverse">
-                       Logout
+                    <button onClick={() => { logout() }} href="https://www.linkedin.com/in/ajayghoshm/" class="flex  text-xs items-center space-x-3 rounded-lg rtl:space-x-reverse">
+                        Logout
                     </button>
                 </div>
             </nav>
@@ -74,7 +86,7 @@ const Dashboard = () => {
                 </div>
                 }
 
-                <ListingTable routeListing={routeListing} onNewCreate={onNewCreate} />
+                <ListingTable addClickinTable={addClickinTable} routeListing={routeListing} onNewCreate={onNewCreate} deleteItem={deleteItem} />
 
             </main>
         </div>

@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { useEffect, useState } from "react"
 
 
@@ -7,14 +8,14 @@ const ImageComponent = ({item,setFormValue}) => {
 
     const onChangeValue = (e) => {
         e.preventDefault()
-        setValue(e.target.value)
+        setValue(URL.createObjectURL(e.target.files[0]))
     }
 
 
     useEffect(() => {
         const getData = setTimeout(() => {
             setFormValue(item.id,value)
-        }, 2000)
+        }, 500)
         return () => clearTimeout(getData)
       }, [value])
         
@@ -22,17 +23,19 @@ const ImageComponent = ({item,setFormValue}) => {
 
 
     return (
-        <div>
-             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Image Component</label>
+        <div className="flex flex-col items-center">
+             <label className="block mb-2 text-md font-medium text-gray-900 dark:text-white p-2">Image Component</label>
             <input className="block w-96 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                 placeholder="image"
                 onPointerDown={event => event.stopPropagation()}
                 onChange={(e) => onChangeValue(e)}
+                onBlur={()=>setFormValue(item.id,value)}
                 type="file" />
-             
-            <image src={value} alt='asd' width={10} height={10}  className="w-40 h-40" />
+             {value &&
+            <Image src={value} alt='asd' width={100} height={100}  className="w-40 h-40" />
+             }
                 
-
+            
         </div>)
 
 }

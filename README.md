@@ -2,6 +2,28 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+
+### Default username and password
+
+username:dashboard
+password:password
+
+### Packages used externally
+
+Minimized the usage of external packages
+
+dnd-kit : For Drag and Drop feature inside edit page
+
+
+### Features of the MVP
+
+Inspired from how Strapi works
+have couple of components like text block and header which can be added,updated and rearranged if needed while in edit mode
+Auth is managed is managed in localstorage
+The page data is stored in the localstorage
+
+
+
 First, run the development server:
 
 ```bash
