@@ -26,6 +26,7 @@ import { useSortable } from "@dnd-kit/sortable/dist"
 import { CSS } from '@dnd-kit/utilities';
 import { Cards } from "@/components/EditComponents/Cards"
 import Image from "next/image"
+import withProtectedRoute from "@/components/withProtectedRoute"
 
 
 
@@ -275,4 +276,4 @@ return (
     </>)
 }
 
-export default Edit
+export default withProtectedRoute(Edit)
