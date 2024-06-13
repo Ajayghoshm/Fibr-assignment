@@ -243,6 +243,7 @@ const [name, setName] = useState(slug)
 return (
     <>
         <h2 class="mb-4 flex justify-center text-xl font-extrabold text-gray-900 dark:text-white md:text-3xl lg:text-3xl"><span class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">Edit Page</span></h2>
+        <label className="flex justify-center w-full">You can rearrange the item here using Drag and Drop in this list</label>
         {/* <div className="flex justify-center flex-col items-center space-y-2">
                 <label>Page Name</label>
                 <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-96"
