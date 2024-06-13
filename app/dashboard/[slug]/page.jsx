@@ -18,14 +18,14 @@ const MainPage = ({ params }) => {
             return (item.id == params.slug)
         })
         console.debug("current page", currentPage, getUserfromLocalStorage, params)
-        setCurrentPageValues(currentPage[0].values)
-        setStatus(currentPage[0].status)
+        setCurrentPageValues(currentPage[0]?.values)
+        setStatus(currentPage[0]?.status)
     }, [params.id])
 
     const onPublish = () => {
         setCurrentPageValues(state => {
             let newState = JSON.parse(JSON.stringify(state))
-            newState[0].status = !newState[0].status
+            newState[0].status = !newState[0]?.status
             return newState
         })
         const getUserfromLocalStorage = localStorage?.getItem("pageValues") ? JSON.parse(localStorage.getItem('pageValues')) : [];
@@ -43,15 +43,16 @@ const MainPage = ({ params }) => {
 
     return (
         <div className='flex flex-col items-center space-y-10'>
-            <div className='flex justify-end w-full p-4'>
+           {currentPageValues && <div className='flex justify-end w-full p-4'>
                 <button onClick={() => onPublish()} 
                 className='focus:outline-none text-white
                  bg-green-700 hover:bg-green-800 focus:ring-4
                   focus:ring-green-300 font-medium rounded-lg 
                   text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600
                    dark:hover:bg-green-700 dark:focus:ring-green-800'>{!status?'Publish':"Take Down"}</button>
-            </div>
-
+            </div>}
+            {!currentPageValues&&
+            <div className='flex w-full h-[90vh] justify-center items-center'>Page don't Exist</div>}
             {currentPageValues?.map(item => {
                 switch (item.type) {
                     case 'header':
