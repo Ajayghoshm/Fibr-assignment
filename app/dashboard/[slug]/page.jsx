@@ -52,7 +52,7 @@ const MainPage = ({ params }) => {
                    dark:hover:bg-green-700 dark:focus:ring-green-800'>{!status?'Publish':"Take Down"}</button>
             </div>}
             {!currentPageValues&&
-            <div className='flex w-full h-[90vh] justify-center items-center'>Page don't Exist</div>}
+            <div className='flex w-full h-[90vh] justify-center items-center'>Page don&apos;t Exist</div>}
             {currentPageValues?.map(item => {
                 switch (item.type) {
                     case 'header':
