@@ -18,7 +18,7 @@ const Dashboard = () => {
     const [routeListing, setRouteListing] = useState([])
 
     const onNewCreate = () => {
-        route.push(`/dashboard/${routeListing.length + 1}/edit`)
+        route.push(`/dashboard/${ Math.round((Math.floor(Math.random() * 1000) + 10) / 10) * 10}/edit`)
     }
 
 
