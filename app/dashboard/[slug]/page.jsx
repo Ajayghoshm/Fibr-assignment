@@ -105,9 +105,9 @@ const MainPage = ({ params }) => {
                     case 'cards':
                         return (
                             <div className="flex justify-between space-x-6 after: py-2">
-                                {item.value.map((each) => {
+                                {item.value.map((each,index) => {
                                     return (
-                                        <div className='space-y-10 border border-gray-200 p-4 rounded-md'>  <div class="flex flex-col items-center justify-center">
+                                        <div key={index} className='space-y-10 border border-gray-200 p-4 rounded-md'>  <div class="flex flex-col items-center justify-center">
                                             <div className="mb-2 text-3xl font-extrabold">{Object.values(each)[0]}</div>
                                             <div className="text-gray-500 dark:text-gray-400">{Object.keys(each)[0]}</div>
                                         </div>
